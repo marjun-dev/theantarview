@@ -370,9 +370,15 @@
         <div class="video-glow"></div>
         <div class="video-wrapper">
           <!-- Demo video — Big Buck Bunny (royalty-free) -->
-          <video id="mainVideo" autoplay muted loop playsinline controls>
+          <video id="mainVideo" loop playsinline controls>
   <source src="PROMO23MB.mp4" type="video/mp4">
 </video>
+
+<script>
+  const video = document.getElementById('mainVideo');
+  video.volume = 1.0;
+  video.play();
+</script>
         </div>
       </div>
     </section>
@@ -457,6 +463,7 @@
 </body>
 
 </html>
+
 
 
 
