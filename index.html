@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The AntarView Podcast</title>
+  <link rel="icon" type="image/x-icon" href="/images/tap1.jpeg">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --accent: #a12b2b;
+      --accent2: #e9bd2d;
+      --text: #f0f0f0;
+      --muted: #555;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── SPLASH SCREEN ── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1.2rem;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #splash.hidden { opacity: 0; visibility: hidden; }
+
+    .logo-ring {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      background: linear-gradient(#000, #000) padding-box,
+                  linear-gradient(135deg, var(--accent), var(--accent2)) border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    .logo-ring svg { width: 54px; height: 54px; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,60,60,0.4); }
+      50%       { transform: scale(1.06); box-shadow: 0 0 0 18px rgba(255,60,60,0); }
+    }
+
+    .logo-wordmark {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.6rem;
+      letter-spacing: 0.18em;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.6s ease 0.5s forwards;
+      text-align: center;
+    }
+
+    .splash-bar {
+      width: 160px;
+      height: 3px;
+      background: var(--muted);
+      border-radius: 99px;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.4s ease 0.8s forwards;
+    }
+    .splash-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      animation: barLoad 1.4s ease 1s forwards;
+    }
+    @keyframes barLoad { to { width: 100%; } }
+    @keyframes fadeUp  { to { opacity: 1; transform: translateY(0); } }
+
+
+    /* ── MAIN PAGE ── */
+    #main {
+      min-height: 100vh;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    #main.visible { opacity: 1; transform: translateY(0); }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.4rem 2.4rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+    }
+    .header-logo {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .header-logo svg { width: 18px; height: 18px; }
+    .header-name {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 0.14em;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Hero */
+    .hero {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 0;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      opacity: 0.85;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #888;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    /* Video Section */
+    .video-section {
+      max-width: 860px;
+      margin: 3rem auto 0;
+      padding: 0 1.5rem;
+    }
+    .video-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .video-label::before {
+      content: '';
+      display: inline-block;
+      width: 22px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .video-wrapper {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,60,60,0.08);
+    }
+    .video-glow {
+      position: absolute;
+      inset: -2px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255,60,60,0.25), rgba(255,140,0,0.18));
+      filter: blur(20px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    /* Social Links */
+    .social-section {
+      max-width: 860px;
+      margin: 2rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+    .social-title {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .social-title::before {
+      content: '';
+      display: inline-block;
+      width: 22px;
+      height: 2px;
+      background: var(--accent2);
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .social-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.4rem;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .social-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .social-card:hover { transform: translateY(-4px); }
+    .social-card:hover::after { opacity: 1; }
+
+    .social-card.instagram { --c1: #e1306c; --c2: #fd1d1d; }
+    .social-card.facebook  { --c1: #1877f2; --c2: #0a5dd9; }
+    .social-card.youtube   { --c1: #ff0000; --c2: #cc0000; }
+
+    .social-card:hover { border-color: var(--c1); box-shadow: 0 12px 32px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.04); }
+    .social-card::after { background: linear-gradient(135deg, var(--c1, transparent), transparent 60%); }
+
+    .social-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      flex-shrink: 0;
+    }
+    .social-icon svg { width: 22px; height: 22px; fill: #fff; }
+
+    .social-info {}
+    .social-info strong {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.1rem;
+    }
+    .social-info span {
+      font-size: 0.75rem;
+      color: #666;
+      letter-spacing: 0.02em;
+    }
+
+    .social-arrow {
+      margin-left: auto;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.25s, transform 0.25s;
+      color: var(--c1);
+      font-size: 1.2rem;
+    }
+    .social-card:hover .social-arrow { opacity: 1; transform: translateX(0); }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 1.4rem;
+      font-size: 0.72rem;
+      color: #333;
+      letter-spacing: 0.06em;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .social-grid { grid-template-columns: 1fr; }
+      header { padding: 1rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ SPLASH ══ -->
+  <div id="splash">
+    <div class="logo-ring">
+      <!-- Play / media logo -->
+      <svg viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="27" cy="27" r="27" fill="url(#sg)"/>
+        <polygon points="22,18 38,27 22,36" fill="#fff"/>
+        <defs>
+          <linearGradient id="sg" x1="0" y1="0" x2="54" y2="54">
+            <stop offset="0%" stop-color="#ff3c3c"/>
+            <stop offset="100%" stop-color="#ff8c00"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="logo-wordmark">The AntarView Podcast</div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+  </div>
+
+  <!-- ══ MAIN PAGE ══ -->
+  <div id="main">
+    <header>
+      <div class="header-logo">
+        <svg viewBox="0 0 18 18" fill="none"><polygon points="6,4 14,9 6,14" fill="#fff"/></svg>
+      </div>
+      <div class="header-name">The AntarView Podcast</div>
+    </header>
+
+    <section class="hero">
+      <p class="hero-eyebrow">Welcome to the official page</p>
+      <h1>WATCH. <span>FOLLOW.</span> CONNECT.</h1>
+      <p class="hero-sub">Tune in to the latest content — and join our community across every platform.</p>
+    </section>
+
+    <section class="video-section">
+      <div class="video-label">Now Playing</div>
+      <div style="position:relative">
+        <div class="video-glow"></div>
+        <div class="video-wrapper">
+          <!-- Demo video — Big Buck Bunny (royalty-free) -->
+          <video
+            id="mainVideo"
+            autoplay
+            
+            loop
+            playsinline
+            controls
+            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          ></video>
+        </div>
+      </div>
+    </section>
+
+    <section class="social-section">
+      <div class="social-title">Follow Us On</div>
+      <div class="social-grid">
+
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/theantarviewpodcast?igsh=MXFyYWsya3FhZmVzMA==" target="_blank" rel="noopener" class="social-card instagram">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </div>
+          <div class="social-info">
+            <strong>Instagram</strong>
+            <span>@theantarviewpodcast</span>
+          </div>
+          <span class="social-arrow">→</span>
+        </a>
+
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/share/14TPAhMF6j7/" target="_blank" rel="noopener" class="social-card facebook">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </div>
+          <div class="social-info">
+            <strong>Facebook</strong>
+            <span>/theantarviewpodcast</span>
+          </div>
+          <span class="social-arrow">→</span>
+        </a>
+
+        <!-- YouTube -->
+        <a href="https://youtube.com/@theantarviewpodcast?si=9yLH6TfxehmFHb-p" target="_blank" rel="noopener" class="social-card youtube">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </div>
+          <div class="social-info">
+            <strong>YouTube</strong>
+            <span>theantarviewpodcast</span>
+          </div>
+          <span class="social-arrow">→</span>
+        </a>
+
+      </div>
+    </section>
+
+    <footer>© 2026 The AntarView Podcast — All rights reserved</footer>
+  </div>
+
+  <script>
+    // ── Splash → Main transition ──
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        const main   = document.getElementById('main');
+        splash.classList.add('hidden');
+        setTimeout(() => {
+          main.classList.add('visible');
+          // Unmute video and set full volume after transition
+          const video = document.getElementById('mainVideo');
+          video.muted  = false;
+          video.volume = 1.0;
+          video.play().catch(() => {
+            // Browser blocked unmuted autoplay – keep muted and play
+            video.muted = true;
+            video.play();
+          });
+        }, 300);
+      }, 1500); // splash duration
+    });
+  </script>
+</body>
+</html>
