@@ -370,20 +370,33 @@
         <div class="video-glow"></div>
         <div class="video-wrapper">
           <!-- Demo video — Big Buck Bunny (royalty-free) -->
-         <video
-            id="mainVideo"
-            autoplay
-          
-            loop
-            playsinline
-            controls
-           
-          ><source src="PROMO23MB.mp4" type="video/mp4"></video>
+        <div style="position:relative; display:inline-block; width:100%;">
+  <video id="mainVideo" autoplay muted loop playsinline controls style="width:100%; aspect-ratio:16/9; border-radius:14px; display:block;">
+    <source src="PROMO23MB.mp4" type="video/mp4">
+  </video>
+  <div id="unmuteBtn" onclick="unmuteVideo()" style="
+    position:absolute; bottom:60px; left:50%; transform:translateX(-50%);
+    background:rgba(0,0,0,0.75); color:#fff; padding:10px 22px;
+    border-radius:99px; cursor:pointer; font-family:'DM Sans',sans-serif;
+    font-size:0.9rem; letter-spacing:0.05em; backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.2); animation: blink 1.8s ease-in-out infinite;
+  ">🔇 Tap to Unmute</div>
+</div>
+
+<style>
+  @keyframes blink {
+    0%,100% { opacity:1; } 50% { opacity:0.4; }
+  }
+</style>
 
 <script>
-  const video = document.getElementById('mainVideo');
-  video.volume = 1.0;
-  video.play();
+  function unmuteVideo() {
+    const video = document.getElementById('mainVideo');
+    const btn = document.getElementById('unmuteBtn');
+    video.muted = false;
+    video.volume = 1.0;
+    btn.style.display = 'none';
+  }
 </script>
         </div>
       </div>
@@ -469,6 +482,7 @@
 </body>
 
 </html>
+
 
 
 
